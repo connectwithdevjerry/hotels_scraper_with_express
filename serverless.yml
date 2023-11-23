@@ -1,0 +1,104 @@
+service: nodejs-dynamodb-aws_lambda-scraper
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+  region: us-east-1
+  environment:
+    DYNAMODB_TABLE_NAME: ${self:custom.hotelsTableName}
+
+custom:
+  hotelsTableName: hotels-table-${self:provider.stage}
+
+plugins:
+  - serverless-iam-roles-per-function
+
+functions:
+  getHotel:
+    handler: api.getHotel
+    name: get-hotel
+    memorySize: 128 # mb
+    timeout: 5 # secs
+    events:
+      - http:
+          path: hotel/{hotel_id}
+          method: GET
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:GetItem"
+        Resource: !GetAtt HotelsTable.Arn
+  createHotel:
+    handler: api.createHotel
+    name: create-hotel
+    memorySize: 128 # mb
+    timeout: 5 #secs
+    events:
+      - http:
+          path: hotel
+          method: POST
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:PutItem"
+        Resource: !GetAtt HotelsTable.Arn
+  updateHotel:
+    handler: api.updateHotel
+    name: update-hotel
+    memorySize: 128 # mb
+    timeout: 5 #secs
+    events:
+      - http:
+          path: hotel/{hotel_id}
+          method: PUT
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:UpdateItem"
+        Resource: !GetAtt HotelsTable.Arn
+  deleteHotel:
+    handler: api.deleteHotel
+    name: delete-hotel
+    memorySize: 128 # mb
+    timeout: 5 #secs
+    events:
+      - http:
+          path: hotel/{hotel_id}
+          method: DELETE
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:DeleteItem"
+        Resource: !GetAtt HotelsTable.Arn
+  getAllHotels:
+    handler: api.getAllHotels
+    name: delete-hotel
+    memorySize: 128 # mb
+    timeout: 5 #secs
+    events:
+      - http:
+          path: hotels
+          method: GET
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:Scan"
+        Resource: !GetAtt HotelsTable.Arn
+
+resources:
+  Resources:
+    HotelsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.hotelsTableName}
+        AttributeDefinitions:
+          - AttributeName: hotel_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: hotel_id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        
