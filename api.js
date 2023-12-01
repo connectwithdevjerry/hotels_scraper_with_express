@@ -8,14 +8,6 @@ const {
 } = require("@aws-sdk/client-dynamodb");
 const { marshall, unmarshall } = require("@aws-sdk/util-dynamodb");
 
-const {
-  sugar_beach,
-  grace_bay_club,
-  nizuc,
-  wymara_resort,
-  cancun,
-} = require("./app");
-
 const getHotel = async (event) => {
   const response = { statusCode: 200 };
   try {
