@@ -3,8 +3,6 @@ const { getAllHotels } = require("./api");
 const { Builder, Browser, Keys, By } = require("selenium-webdriver");
 const chrome = require("selenium-webdriver/chrome");
 
-// please note that the user of this code needs to have chrome webdriver installed on the his computer. After installation, also ensure the webdriver is set to path. How to install the webdriver? use this link https://chromedriver.storage.googleapis.com/index.html
-
 const setDate = (today, type = null) => {
   let yyyy = today.getFullYear();
   let mm = today.getMonth() + 1; // Months start at 0!
@@ -30,11 +28,6 @@ const sugar_beach = async () => {
   await drivers.manage().window().maximize();
 
   let website_url = `https://reservations.viceroyhotelsandresorts.com/?_ga=2.63980905.754880256.1697504574-1226995346.1697504574&adult=1&arrive=${todays_date}&chain=1003&child=1&childages=17&currency=USD&depart=${tomorrow}&hotel=22215&level=hotel&locale=en-US&rooms=1`;
-
-  console.log({
-    todays_date,
-    tomorrow,
-  });
 
   drivers.manage().setTimeouts({ implicit: 6000 });
 
@@ -110,14 +103,6 @@ const sugar_beach = async () => {
         .findElement(By.xpath("//div[@class='thumb-cards_price']/span"))
         .getText()
         .then((value) => value);
-      // let roomsize_size = await room_divs[i]
-      //   .findElement(
-      //     By.xpath(
-      //       "//div[@class='guests-and-roomsize_item guests-and-roomsize_size']"
-      //     )
-      //   )
-      //   .getText()
-      //   .then((value) => value.replace("\nsquare feet", ""));
       let roomsize_size = await room_divs[i]
         .findElement(
           By.className("guests-and-roomsize_item guests-and-roomsize_size")
@@ -128,10 +113,9 @@ const sugar_beach = async () => {
         .findElement(By.className("thumb-cards_price"))
         .getText()
         .then((value) => value);
-      // let other_info = room_divs[i].findElements(By.TAG_NAME, "li")
+
       console.log({
         room_name,
-        // roomsize_area,
         roomsize_bed,
         roomsize_guests,
         roomsize_size,
@@ -200,59 +184,58 @@ const grace_bay_club = async () => {
   // RATE EXTRACTIONS BEGIN HERE
 
   let itr = await drivers.findElements(
-    By.xpath(
-      "//*[contains(@id, 'auto-parent-card')]"
-    )
+    By.xpath("//*[contains(@id, 'auto-parent-card')]")
   );
   let allBeachEscapes = await drivers.findElements(
     By.xpath(
       "//*[contains(@id, 'auto-child-card')]/div/div/div[2]/div[1]/div/ins/span[2]"
     )
-  )
+  );
   let allStandardRates = await drivers.findElements(
     By.xpath(
       "//*[contains(@id, 'auto-child-card-')]/div/div/div[2]/div[1]/div/div[@class='thumb-cards_price']/span"
     )
-  )
+  );
   let allRoomSizes = await drivers.findElements(
     By.xpath(
       "//*[contains(@id, 'auto-parent-card')]/div/div/div[2]/div[1]/div[1]/div/div[3]"
     )
-  )
+  );
   let allSleeps = await drivers.findElements(
     By.xpath(
       "//*[contains(@id, 'auto-parent-card')]/div/div/div[2]/div[1]/div[1]/div/div[1]/span"
     )
-  )
+  );
   let allRoomNames = await drivers.findElements(
-    By.xpath(
-      "//*[contains(@id, 'auto-parent-card')]/div/div/div[2]/div[1]/h3"
-    )
-  )
+    By.xpath("//*[contains(@id, 'auto-parent-card')]/div/div/div[2]/div[1]/h3")
+  );
   let allBedSize = await drivers.findElements(
     By.xpath(
       "//*[contains(@id, 'auto-parent-card')]/div/div/div[2]/div[1]/div[1]/div/div[2]/span"
     )
-  )
+  );
   for (i = 0; i < itr.length; i++) {
-      let room_name = await allRoomNames[i].getText();
-      let roomsize_bed = await allBedSize[i].getText();
-      let roomsize_guests = await allSleeps[i].getText();
-      let roomsize_size = (await allRoomSizes[i].getText()).replace("\nsquare feet", "");
-      let beachEscapes = await allBeachEscapes[i].getText();
-      let standard = await allStandardRates[i].getText();
-      console.log({
-        room_name,
-        // roomsize_area,
-        roomsize_bed,
-        roomsize_guests,
-        roomsize_size,
-        rates: {
-          beachEscapes,
-          standard,
-        },
-      });
-  };
+    let room_name = await allRoomNames[i].getText();
+    let roomsize_bed = await allBedSize[i].getText();
+    let roomsize_guests = await allSleeps[i].getText();
+    let roomsize_size = (await allRoomSizes[i].getText()).replace(
+      "\nsquare feet",
+      ""
+    );
+    let beachEscapes = await allBeachEscapes[i].getText();
+    let standard = await allStandardRates[i].getText();
+    console.log({
+      room_name,
+      // roomsize_area,
+      roomsize_bed,
+      roomsize_guests,
+      roomsize_size,
+      rates: {
+        beachEscapes,
+        standard,
+      },
+    });
+  }
   // RATE EXTRACTIONS END HERE
 
   await drivers.quit();
@@ -310,19 +293,21 @@ const nizuc = async () => {
   drivers.manage().setTimeouts({ implicit: 6000 });
 
   let itr = await drivers.findElements(
-    By.xpath(
-      "//*[contains(@id, 'auto-parent-card')]"
-    )
+    By.xpath("//*[contains(@id, 'auto-parent-card')]")
   );
 
   let allRoomNames = await drivers.findElements(
     By.xpath("//*[contains(@id, 'auto-parent-card')]/div/div/div[2]/div[1]/h2")
   );
   let allPrices = await drivers.findElements(
-    By.xpath("//*[contains(@id, 'auto-child-card')]/div/div/div[2]/div[1]/div/div[1]/span")
+    By.xpath(
+      "//*[contains(@id, 'auto-child-card')]/div/div/div[2]/div[1]/div/div[1]/span"
+    )
   );
   let allOtherDetails = await drivers.findElements(
-    By.xpath("//*[contains(@id, 'auto-parent-card')]/div/div/div[2]/div[1]/div[2]")
+    By.xpath(
+      "//*[contains(@id, 'auto-parent-card')]/div/div/div[2]/div[1]/div[2]"
+    )
   );
 
   for (i = 0; i < itr.length; i++) {
@@ -339,49 +324,49 @@ const nizuc = async () => {
       // roomsize_size,
     });
     // try {
-      // let room_divs = await drivers.findElements(
-      //   By.xpath(
-      //     "//div[@class='app_row']//div[contains(@class, 'app_col-md-12 app_col-lg-12')]"
-      //   )
-      // );
-      // let room_name = await room_divs[i]
-      //   .findElement(By.css("h2"))
-      //   .getText()
-      //   .then((value) => value);
+    // let room_divs = await drivers.findElements(
+    //   By.xpath(
+    //     "//div[@class='app_row']//div[contains(@class, 'app_col-md-12 app_col-lg-12')]"
+    //   )
+    // );
+    // let room_name = await room_divs[i]
+    //   .findElement(By.css("h2"))
+    //   .getText()
+    //   .then((value) => value);
 
-      // let roomsize_guests = await room_divs[i]
-      //   .findElement(
-      //     By.xpath(
-      //       "//div[@class='guests-and-roomsize_item guests-and-roomsize_guests']/span"
-      //     )
-      //   )
-      //   .getText()
-      //   .then((value) => value);
+    // let roomsize_guests = await room_divs[i]
+    //   .findElement(
+    //     By.xpath(
+    //       "//div[@class='guests-and-roomsize_item guests-and-roomsize_guests']/span"
+    //     )
+    //   )
+    //   .getText()
+    //   .then((value) => value);
 
-      // let roomsize_bed = await room_divs[i]
-      //   .findElement(
-      //     By.xpath(
-      //       "//div[@class='guests-and-roomsize_item guests-and-roomsize_bed']/span"
-      //     )
-      //   )
-      //   .getText()
-      //   .then((value) => value);
-      // let roomsize_area = await room_divs[i]
-      //   .findElement(By.xpath("//div[@class='thumb-cards_price']/span"))
-      //   .getText()
-      //   .then((value) => value);
-      // let roomsize_size = await room_divs[i]
-      //   .findElement(
-      //     By.className("guests-and-roomsize_item guests-and-roomsize_size")
-      //   )
-      //   .getText()
-      //   .then((value) => value.replace("\nsquare feet", ""));
-      // let price = await room_divs[i]
-      //   .findElement(By.className("thumb-cards_price"))
-      //   .getText()
-      //   .then((value) => value);
-      // let other_info = room_divs[i].findElements(By.TAG_NAME, "li")
-      
+    // let roomsize_bed = await room_divs[i]
+    //   .findElement(
+    //     By.xpath(
+    //       "//div[@class='guests-and-roomsize_item guests-and-roomsize_bed']/span"
+    //     )
+    //   )
+    //   .getText()
+    //   .then((value) => value);
+    // let roomsize_area = await room_divs[i]
+    //   .findElement(By.xpath("//div[@class='thumb-cards_price']/span"))
+    //   .getText()
+    //   .then((value) => value);
+    // let roomsize_size = await room_divs[i]
+    //   .findElement(
+    //     By.className("guests-and-roomsize_item guests-and-roomsize_size")
+    //   )
+    //   .getText()
+    //   .then((value) => value.replace("\nsquare feet", ""));
+    // let price = await room_divs[i]
+    //   .findElement(By.className("thumb-cards_price"))
+    //   .getText()
+    //   .then((value) => value);
+    // let other_info = room_divs[i].findElements(By.TAG_NAME, "li")
+
     // } catch (error) {
     //   // if i<1 then i=0 implying that there is an error on the webpage we're scraping. Likely to be that the element is not found: NoSuchElement Error
     //   i < 1 ? console.error(error) : "";
@@ -448,14 +433,10 @@ const wymara_resort = async () => {
   drivers.manage().setTimeouts({ implicit: 6000 });
 
   let itr = await drivers.findElements(
-    By.xpath(
-      "//*[contains(@id, 'auto-child-card')]"
-    )
+    By.xpath("//*[contains(@id, 'auto-child-card')]")
   );
   let allRoomNames = await drivers.findElements(
-    By.xpath(
-      "//*[contains(@id, 'auto-parent-card')]/div/div/div[2]/div[1]/h2"
-    )
+    By.xpath("//*[contains(@id, 'auto-parent-card')]/div/div/div[2]/div[1]/h2")
   );
   let allPrices = await drivers.findElements(
     By.xpath(
@@ -468,71 +449,21 @@ const wymara_resort = async () => {
     )
   );
   let allOtherDetails = await drivers.findElements(
-    By.xpath(
-      "//div[@class='thumb-cards_roomShortDesc']"
-    )
-  )
+    By.xpath("//div[@class='thumb-cards_roomShortDesc']")
+  );
   for (i = 0; i < itr.length; i++) {
     let room_name = await allRoomNames[i].getText();
     let price = await allPrices[i].getText();
     let details = await allOtherDetails[i].getText();
     let impInfo = await allImpDetails[i].getText();
-      console.log({
-        room_name,
-        // roomsize_area,
-        // roomsize_bed,
-        impInfo,
-        details,
-        price,
-      });
-    // try {
-    //   let room_divs = await drivers.findElements(
-    //     By.xpath(
-    //       "//div[@class='app_row']//div[contains(@class, 'app_col-md-12 app_col-lg-12')]"
-    //     )
-    //   );
-    //   let room_name = await room_divs[i]
-    //     .findElement(By.css("h2"))
-    //     .getText()
-    //     .then((value) => value);
-    //   let roomsize_guests = await room_divs[i]
-    //     .findElement(
-    //       By.xpath(
-    //         "//div[@class='guests-and-roomsize_item guests-and-roomsize_guests']/span"
-    //       )
-    //     )
-    //     .getText()
-    //     .then((value) => value);
-    //   let roomsize_bed = await room_divs[i]
-    //     .findElement(
-    //       By.xpath(
-    //         "//div[@class='guests-and-roomsize_item guests-and-roomsize_bed']/span"
-    //       )
-    //     )
-    //     .getText()
-    //     .then((value) => value);
-    //   let roomsize_area = await room_divs[i]
-    //     .findElement(By.xpath("//div[@class='thumb-cards_price']/span"))
-    //     .getText()
-    //     .then((value) => value);
-    //   let roomsize_size = await room_divs[i]
-    //     .findElement(
-    //       By.xpath(
-    //         "//div[@class='guests-and-roomsize_item guests-and-roomsize_size']"
-    //       )
-    //     )
-    //     .getText()
-    //     .then((value) => value.replace("\nsquare feet", ""));
-    //   let price = await room_divs[i]
-    //     .findElement(By.className("thumb-cards_price"))
-    //     .getText()
-    //     .then((value) => value);
-    //   // let other_info = room_divs[i].findElements(By.TAG_NAME, "li")
-
-    // } catch (error) {
-    //   // if i<1 then i=0 implying that there is an error on the webpage we're scraping. Likely to be that the element is not found: NoSuchElement Error
-    //   i < 1 ? console.error(error) : "";
-    // }
+    console.log({
+      room_name,
+      // roomsize_area,
+      // roomsize_bed,
+      impInfo,
+      details,
+      price,
+    });
   }
 
   await drivers.quit();
@@ -600,22 +531,28 @@ const cancun = async () => {
   // RATES EXTRACTION STARTS HERE
   let rooms = await drivers.findElements(By.xpath("//*[@class='habitacion']"));
   let allAvgPriceRO = await drivers.findElements(
-    By.xpath("//*[contains(@id, 'pensiones_box')]/div[2]/div/li[1]/*//div[contains(@class, 'roi-boards__block--average-price')]//div[contains(@class, 'precio')]//span[contains(@class, 'contenedor-precio')]")
+    By.xpath(
+      "//*[contains(@id, 'pensiones_box')]/div[2]/div/li[1]/*//div[contains(@class, 'roi-boards__block--average-price')]//div[contains(@class, 'precio')]//span[contains(@class, 'contenedor-precio')]"
+    )
   );
   let allAvgPriceAI = await drivers.findElements(
     By.xpath("//*[contains(@id, 'cyberdos-TI')]/div[1]/div/span")
   );
   let allTotalP = await drivers.findElements(
-    By.xpath("//*[contains(@id, 'cyberdos-SA')]/div[2]/div[2]/div/div/span/span[2]")
+    By.xpath(
+      "//*[contains(@id, 'cyberdos-SA')]/div[2]/div[2]/div/div/span/span[2]"
+    )
   );
   let allTotalPA = await drivers.findElements(
-    By.xpath("//*[contains(@id, 'cyberdos-TI')]/div[2]/div[2]/div/div/span/span[2]")
+    By.xpath(
+      "//*[contains(@id, 'cyberdos-TI')]/div[2]/div[2]/div/div/span/span[2]"
+    )
   );
   let roomNames = await drivers.findElements(
     By.xpath("//h3[@class='hab_titulo']")
   );
   for (let i = 0; i < rooms.length; i++) {
-    let room_name = (await roomNames[i].getText()).split('-')[0].trim();
+    let room_name = (await roomNames[i].getText()).split("-")[0].trim();
     let avgP = await allAvgPriceRO[i].getText();
     let avgPA = await allAvgPriceAI[i].getText();
     let totalPA = await allTotalPA[i].getText();
@@ -627,13 +564,13 @@ const cancun = async () => {
         all_inclusive: { avgPrice: avgPA, total: totalPA },
       },
     });
-  };
+  }
   // RATES EXTRACTION ENDS HERE
 
   await drivers.quit();
 };
 
-sugar_beach();
+// cancun();
 
 module.exports = {
   sugar_beach,
