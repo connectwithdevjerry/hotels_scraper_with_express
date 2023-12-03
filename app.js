@@ -3,7 +3,7 @@ const { getAllHotels } = require("./api");
 const { Builder, Browser, Keys, By } = require("selenium-webdriver");
 const chrome = require("selenium-webdriver/chrome");
 
-export class Scraper {
+class Scraper {
   constructor() {
     this.driver;
   }
@@ -427,7 +427,7 @@ export class Scraper {
     let departure = "02-12-2023";
     let [day, mth, year] = arrival.split("-");
     let [dayD, mthD, yearD] = departure.split("-");
-    dayD = dayD[0] == "0" ? dayD[1] : dayD;
+    dayD = dayD[0] == "0" ? dayD[1] : dayD; // in cases of days with singular values
   
     await this.drivers.manage().window().maximize();
   
@@ -517,10 +517,10 @@ export class Scraper {
     }
     // RATES EXTRACTION ENDS HERE
   
-    await this.drivers.quit();
+    this.quitBrowser()
   };
 };
 
-// let scraper = new Scraper();
-// let { sugar_beach, grace_bay_club, cancun, wymara_resort, nizuc } = scraper;
-// grace_bay_club()
+let scraper = new Scraper();
+let { sugar_beach, grace_bay_club, cancun, wymara_resort, nizuc } = scraper;
+sugar_beach()
